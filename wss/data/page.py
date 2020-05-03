@@ -1,3 +1,9 @@
+import urllib.request
+
+import logging
+logger = logging.getLogger('root')
+
+
 class Page:
     """Page class description"""
 
@@ -5,4 +11,6 @@ class Page:
         self.url = url
 
     def get(self):
-        return 'Page content from', self.url
+        logger.debug('Getting page source from: ' + self.url)
+        page = urllib.request.urlopen(self.url)
+        return page.read()

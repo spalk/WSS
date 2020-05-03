@@ -14,5 +14,9 @@ def run():
             active_services.append(service)
 
     for service in active_services:
+        logger.debug('Get forecast from: ' + service)
         w = WeatherForecast(service)
-        w.get_forecast()
+        data = w.get_forecast()
+
+        for d in data:
+            print(d)
