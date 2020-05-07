@@ -13,4 +13,9 @@ class Page:
     def get(self):
         logger.debug('Getting page source from: ' + self.url)
         page = urllib.request.urlopen(self.url)
-        return page.read()
+        page_content = page.read()
+        logger.debug('>> Received %s bytes' % len(page_content))
+        # print(page_content)
+        return page_content
+
+

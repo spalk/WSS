@@ -61,18 +61,18 @@ class ParserRP5(HTMLParser, ABC):
 
             # Temperature
             # <div class="t_0"><b>+<span class="otstup"></span>8</b></div>
-            if self.tr_counter == 6 and tag == 'div':
+            if self.tr_counter == 5 and tag == 'div':
                 for name, value in attrs:
                     if name == 'class' and value == 't_0':
                         self.temper_marker = True
                         break
 
-            if self.tr_counter == 6 and self.temper_marker and tag == 'b':
+            if self.tr_counter == 5 and self.temper_marker and tag == 'b':
                 self.temper_marker_final = True
 
             # Pressure
             # <div class="p_0">740</div>
-            if self.tr_counter == 8 and tag == 'div':
+            if self.tr_counter == 7 and tag == 'div':
                 for name, value in attrs:
                     if name == 'class' and value == 'p_0':
                         self.pressure_marker = True
@@ -122,6 +122,9 @@ class ParserRP5(HTMLParser, ABC):
 
     def set_data_types(self):
         """Clearing data and converting from strings to datetime and int"""
+
+        logger.debug('Raw data parsed: ' + str(self.cnt_raw_data))
+
         days_dt = []
         hours_int = []
         tempers_int = []
@@ -131,10 +134,12 @@ class ParserRP5(HTMLParser, ABC):
         for day in self.dates:
             # "September 18, 2017, 22:19:55" -> "%B %d, %Y, %H:%M:%S"
             day_dt = datetime.datetime.strptime(day, '%B %d')
-            current_year = datetime.datetime.now().year  # NEED TO FIX THIS!
+            # current_year = datetime.datetime.now().year  # NEED TO FIX THIS!
+            current_year = self.get_year(day_dt.month)
             day_dt_final = day_dt.replace(year=current_year)
             days_dt.append(day_dt_final)
         # print(days_dt)
+        logger.debug('>> len days_dt %s' % len(days_dt))
 
         # hours
         hour_num = re.compile(r'\d+')
@@ -142,6 +147,7 @@ class ParserRP5(HTMLParser, ABC):
             if hour_num.match(hour):
                 hours_int.append(int(hour))
         # print(hours_int)
+        logger.debug('>> len hours_int %s' % len(hours_int))
 
         # temperature
         temper_sign = re.compile(r'[+,-]')
@@ -154,11 +160,13 @@ class ParserRP5(HTMLParser, ABC):
                     temp = temp * (-1)
                 tempers_int.append(temp)
         # print(temper_int)
+        logger.debug('>> len temper_int %s' % len(tempers_int))
 
         # pressure
         for p in self.pressures:
             pressures_int.append(int(p))
         # print(pressures_int)
+        logger.debug('>> len pressures_int %s' % len(pressures_int))
 
         # packing data
         data_len = len(hours_int) - 1
@@ -177,9 +185,17 @@ class ParserRP5(HTMLParser, ABC):
                 if hours_int[i + 1] < hours_int[i]:
                     date_index += 1
 
-    def get_data(self):
+        logger.debug('Clean data parsed: ' + str(self.cnt_clean_data))
+
+    def get_data(self) -> list:
         return self.data
 
-
-
-
+    @staticmethod
+    def get_year(month: int) -> int:
+        """Get year (int) from month (int)"""
+        now = datetime.datetime.now()
+        current_month = now.month
+        if month != current_month and month == 1:
+            return now.year + 1
+        else:
+            return now.year

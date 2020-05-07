@@ -167,7 +167,7 @@ class HTMLParserRP5(HTMLParser, ABC):
         return self.data
 
 
-html_page = open('test_page.html', 'r').read()
+html_page = open('page_rp5_example.html', 'r').read()
 parser = HTMLParserRP5()
 parser.feed(html_page)
 parser.set_data_types()

@@ -13,10 +13,21 @@ def run():
         if config['SERVICES'][service] == '1':
             active_services.append(service)
 
+    all_data = []
     for service in active_services:
         logger.debug('Get forecast from: ' + service)
-        w = WeatherForecast(service)
-        data = w.get_forecast()
+        try:
+            w = WeatherForecast(service)
+            data = w.get_forecast()
+            for line in data:
+                line['service'] = service
+                all_data.append(line)
+        except Exception as e:
+            logger.critical(e, exc_info=True)
+            pass
 
-        for d in data:
-            print(d)
+    for line in all_data:
+        print(line)
+
+
+
