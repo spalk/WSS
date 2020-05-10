@@ -2,7 +2,7 @@ import datetime
 
 from wss.data.config import config
 from wss.data.page import Page
-from wss.data.parser import Parser
+from wss.data.parser import ParserService
 
 import logging
 logger = logging.getLogger('root')
@@ -19,5 +19,5 @@ class WeatherForecast:
     def get_forecast(self):
         url = config[self.service]['url']
         page_content = Page(url).get()
-        forecast_data = Parser(self.service, page_content)
+        forecast_data = ParserService(self.service, page_content)
         return forecast_data.get_data()
