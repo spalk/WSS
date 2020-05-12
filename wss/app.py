@@ -1,6 +1,7 @@
 
 from wss.data.config import config
 from wss.data.weatherforecast import WeatherForecast
+from wss.data.db import DB
 
 import logging
 logger = logging.getLogger('root')
@@ -26,8 +27,10 @@ def run():
             logger.critical(e, exc_info=True)
             pass
 
-    for line in all_data:
-        print(line)
+    db = DB()
+    db.save_forecast(all_data)
+    db.db_close()
+
 
 
 
