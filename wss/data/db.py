@@ -31,9 +31,11 @@ class DB:
         for line in data:
             line['timestamp'] = timestamp
             if line['parameter'] == 't':
-                temp_data.append(self.dic2tuple(line))
+                if not self.raw_exist('temperature', line):
+                    temp_data.append(self.dic2tuple(line))
             elif line['parameter'] == 'p':
-                pres_data.append(self.dic2tuple(line))
+                if not self.raw_exist('pressure', line):
+                    pres_data.append(self.dic2tuple(line))
             else:
                 logger.critical('Unexpected parameter in dic: ' + line['parameter'])
 
@@ -73,6 +75,18 @@ class DB:
                                        value REAL NOT NULL,
                                        service TEXT NOT NULL)
                                """)
+
+    def raw_exist(self, table: str, data: dict) -> bool:
+        """Check if forecast for this date and time already in DB"""
+        request = 'SELECT id FROM %s WHERE datetime=:datetime and value=:value and service=:service' % table
+        self.c.execute(request,
+                       {"table": table, 'datetime': data['datetime'], 'value': data['value'],
+                        'service': data['service']})
+        result = self.c.fetchall()
+        if len(result) == 0:
+            return False
+        else:
+            return True
 
     def db_close(self):
         self.conn.close()
