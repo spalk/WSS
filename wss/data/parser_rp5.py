@@ -134,11 +134,9 @@ class ParserRP5(HTMLParser, ABC):
         for day in self.dates:
             # "September 18, 2017, 22:19:55" -> "%B %d, %Y, %H:%M:%S"
             day_dt = datetime.datetime.strptime(day, '%B %d')
-            # current_year = datetime.datetime.now().year  # NEED TO FIX THIS!
             current_year = self.get_year(day_dt.month)
             day_dt_final = day_dt.replace(year=current_year)
             days_dt.append(day_dt_final)
-        # print(days_dt)
         logger.debug('>> len days_dt %s' % len(days_dt))
 
         # hours
@@ -146,7 +144,6 @@ class ParserRP5(HTMLParser, ABC):
         for hour in self.hours:
             if hour_num.match(hour):
                 hours_int.append(int(hour))
-        # print(hours_int)
         logger.debug('>> len hours_int %s' % len(hours_int))
 
         # temperature
@@ -159,13 +156,11 @@ class ParserRP5(HTMLParser, ABC):
                 if sign == '-':
                     temp = temp * (-1)
                 tempers_int.append(temp)
-        # print(temper_int)
         logger.debug('>> len temper_int %s' % len(tempers_int))
 
         # pressure
         for p in self.pressures:
             pressures_int.append(int(p))
-        # print(pressures_int)
         logger.debug('>> len pressures_int %s' % len(pressures_int))
 
         # packing data
