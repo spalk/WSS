@@ -42,6 +42,10 @@ class ParserRP5(HTMLParser, ABC):
         if self.table_open:
             if tag == 'tr':
                 self.tr_counter += 1
+                # ignore tr with class: <tr class="underlineRow"></tr>
+                for name, value in attrs:
+                    if name == 'class' and value == 'underlineRow':
+                        self.tr_counter -= 1
 
             # Days
             # <span class="monthDay">April 29</span>
