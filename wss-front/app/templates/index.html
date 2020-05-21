@@ -23,101 +23,12 @@
         }
         </style>
 
-        <!-- Chart code -->
+        <!-- Data for chart_1 -->
         <script>
-        var wssData = {{ wss_data|tojson }};
-        var wssSeries = {{ wss_series|tojson }};
-        console.log(JSON.stringify(wssData));
-        console.log(JSON.stringify(wssSeries));
+			var wssData = {{ wss_data|tojson }};
+		</script>
+		<script src="{{ url_for('static', filename='wss_chart_1.js')}}"></script>
 
-        am4core.ready(function() {
-
-        // Themes begin
-        am4core.useTheme(am4themes_animated);
-        // Themes end
-
-
-        // Create chart instance
-        var chart = am4core.create("chartdiv", am4charts.XYChart);
-
-        // Create axes
-        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
-        //for (var i = 0; i < 2; i++) {
-        //  createSeries("value" + i, "Series #" + i);
-        //}
-        for (var s in wssSeries) {
-		  createSeries(wssSeries[s], wssSeries[s]);
-		}
-
-        // Create series
-        function createSeries(s, name) {
-          var series = chart.series.push(new am4charts.LineSeries());
-          series.dataFields.valueY = "value_" + s;
-          series.dataFields.dateX = "date";
-          series.name = name;
-
-          var segment = series.segments.template;
-          segment.interactionsEnabled = true;
-
-          var hoverState = segment.states.create("hover");
-          hoverState.properties.strokeWidth = 3;
-
-          var dimmed = segment.states.create("dimmed");
-          dimmed.properties.stroke = am4core.color("#dadada");
-
-          segment.events.on("over", function(event) {
-            processOver(event.target.parent.parent.parent);
-          });
-
-          segment.events.on("out", function(event) {
-            processOut(event.target.parent.parent.parent);
-          });
-
-          series.data = wssData;
-          return series;
-        }
-
-        chart.legend = new am4charts.Legend();
-        chart.legend.position = "right";
-        chart.legend.scrollable = true;
-        chart.legend.itemContainers.template.events.on("over", function(event) {
-          processOver(event.target.dataItem.dataContext);
-        })
-
-        chart.legend.itemContainers.template.events.on("out", function(event) {
-          processOut(event.target.dataItem.dataContext);
-        })
-
-        function processOver(hoveredSeries) {
-          hoveredSeries.toFront();
-
-          hoveredSeries.segments.each(function(segment) {
-            segment.setState("hover");
-          })
-
-          chart.series.each(function(series) {
-            if (series != hoveredSeries) {
-              series.segments.each(function(segment) {
-                segment.setState("dimmed");
-              })
-              series.bulletsContainer.setState("dimmed");
-            }
-          });
-        }
-
-        function processOut(hoveredSeries) {
-          chart.series.each(function(series) {
-            series.segments.each(function(segment) {
-              segment.setState("default");
-            })
-            series.bulletsContainer.setState("default");
-          });
-        }
-
-        }); // end am4core.ready()
-        </script>
 	</head>
 	<body>
 		<nav class="nav" tabindex="-1" onclick="this.focus()">
@@ -130,7 +41,7 @@
 		</nav>
 		<button class="btn-close btn btn-sm">×</button>
 		<div class="container">
-			<h1>Temperature</h1>
+			<h1>Yandex Forecast History</h1>
 			<p>Hey look!</p>
             <!-- amchart -->
             <div id="chartdiv"></div>
