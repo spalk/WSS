@@ -132,7 +132,7 @@ class ParserYandex(HTMLParser, ABC):
             hour = time_of_day_dic[time_of_day]
             dt = days_dt[cnt_day].replace(hour=hour)
             if time_of_day == 4:
-                dt = dt.replace(day=dt.day+1)
+                dt = dt + datetime.timedelta(days=1)
 
             for t in self.tempers[i]:
                 data = {'datetime': dt, 'parameter': 't', 'value': int(t)}
