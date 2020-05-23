@@ -11,7 +11,14 @@ class DB:
         self.c = self.conn.cursor()
 
     def get_data_for_chart(self):
-        self.c.execute('''SELECT * FROM temperature WHERE service = ?''', ('yandex',))
+        # SELECT * FROM session WHERE stop_time > (SELECT DATETIME('now', '-7 day'))
+        history_days = config['DB']['history_days']
+        cur_dt_req = '''(SELECT DATETIME('now', '-%s day')''' % history_days
+        req = ''' SELECT * 
+            FROM temperature 
+            WHERE service = ?
+            AND datetime > %s)''' % cur_dt_req
+        self.c.execute(req, ('yandex',))
         rows = self.c.fetchall()
 
         data = []
