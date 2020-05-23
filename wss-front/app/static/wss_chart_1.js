@@ -15,6 +15,12 @@ am4core.ready(function() {
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.tooltip.disabled = true;
 
+    var range = dateAxis.axisRanges.create();
+    range.date = new Date();
+    range.grid.stroke = am4core.color("red");
+    range.grid.strokeWidth = 2;
+    range.grid.strokeOpacity = 1;
+
     var series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = "date";
     series.dataFields.openValueY = "open";
@@ -32,6 +38,8 @@ am4core.ready(function() {
     series2.defaultState.transitionDuration = 1500;
     series2.stroke = chart.colors.getIndex(6);
     series2.tensionX = 0.8;
+
+
 
     chart.cursor = new am4charts.XYCursor();
     chart.cursor.xAxis = dateAxis;
