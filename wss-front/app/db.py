@@ -10,15 +10,19 @@ class DB:
         self.conn = sqlite3.connect(db_file)
         self.c = self.conn.cursor()
 
-    def get_data_for_chart(self):
+    def get_data_for_chart(self, service):
         # SELECT * FROM session WHERE stop_time > (SELECT DATETIME('now', '-7 day'))
         history_days = config['DB']['history_days']
-        cur_dt_req = '''(SELECT DATETIME('now', '-%s day')''' % history_days
+        forecast_days = config['DB']['forecast_days']
+        history_dt_req = '''(SELECT DATETIME('now', '-%s day'))''' % history_days
+        forecast_dt_req = '''(SELECT DATETIME('now', '+%s day'))''' % forecast_days
         req = ''' SELECT * 
             FROM temperature 
             WHERE service = ?
-            AND datetime > %s)''' % cur_dt_req
-        self.c.execute(req, ('yandex',))
+            AND datetime > %s
+            AND datetime < %s''' % (history_dt_req, forecast_dt_req)
+        print (req)
+        self.c.execute(req, (service,))
         rows = self.c.fetchall()
 
         data = []
