@@ -1,5 +1,6 @@
 from wss.data.parser_rp5 import ParserRP5
 from wss.data.parser_yandex import ParserYandex
+from wss.data.parser_narodmon import ParserNarodmon
 
 import logging
 
@@ -12,6 +13,8 @@ class ParserService:
             self.parser = ParseRP5(page_content)
         elif service == 'yandex':
             self.parser = ParseYandex(page_content)
+        elif service == 'narodmon':
+            self.parser = ParseNarodmon(page_content)
         self.parser.set_parser()
 
     def get_data(self):
@@ -46,3 +49,10 @@ class ParseYandex(Parser):
     def set_parser(self):
         logger.debug('Try to parse Yandex')
         self.parser = ParserYandex()
+
+
+class ParseNarodmon(Parser):
+    def set_parser(self):
+        logger.debug('Try to parse Narodmon')
+        self.parser = ParserNarodmon()
+
