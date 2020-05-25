@@ -18,6 +18,7 @@ class ParserRP5(HTMLParser, ABC):
         self.temper_marker = False
         self.temper_marker_final = False
         self.pressure_marker = False
+        self.pressure_tr_detected = False
 
         self.dates = []
         self.hours = []
@@ -76,7 +77,7 @@ class ParserRP5(HTMLParser, ABC):
 
             # Pressure
             # <div class="p_0">740</div>
-            if self.tr_counter == 7 and tag == 'div':
+            if self.pressure_tr_detected and tag == 'div':
                 for name, value in attrs:
                     if name == 'class' and value == 'p_0':
                         self.pressure_marker = True
@@ -103,11 +104,14 @@ class ParserRP5(HTMLParser, ABC):
             if tag == 'b':
                 self.temper_marker_final = False
 
-        if self.pressure_marker:
+        if self.pressure_tr_detected:
             if tag == 'div':
                 self.pressure_marker = False
 
     def handle_data(self, data):
+        if self.table_open:
+            if data == 'Pressure':
+                self.pressure_tr_detected = True
         if self.date_marker:
             self.dates.append(data)
             self.cnt_raw_data += 1
