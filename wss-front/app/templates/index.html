@@ -27,6 +27,7 @@
         <script>
 			var DataYandex = {{ data_yandex|tojson }};
 			var DataRP5 = {{ data_rp5|tojson }};
+			var DataNarodmon = {{ data_narodmon|tojson }};
 		</script>
 		<script src="{{ url_for('static', filename='wss_chart_yandex.js')}}"></script>
 		<script src="{{ url_for('static', filename='wss_chart_rp5.js')}}"></script>
@@ -43,11 +44,11 @@
 		</nav>
 		<button class="btn-close btn btn-sm">×</button>
 		<div class="container">
-			<h3>Yandex Forecast and History:</h3>
+			<h3>Yandex Forecast and real data:</h3>
             <div id="chart_yandex"></div>
 		</div>
 		<div class="container">
-			<h3>RP5 Forecast and History:</h3>
+			<h3>RP5 Forecast and real data:</h3>
             <div id="chart_rp5"></div>
 		</div>
 	</body>
