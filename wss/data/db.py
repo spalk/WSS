@@ -77,16 +77,38 @@ class DB:
                                """)
 
     def raw_exist(self, table: str, data: dict) -> bool:
-        """Check if forecast for this date and time already in DB"""
-        request = 'SELECT id FROM %s WHERE datetime=:datetime and value=:value and service=:service' % table
-        self.c.execute(request,
-                       {"table": table, 'datetime': data['datetime'], 'value': data['value'],
-                        'service': data['service']})
-        result = self.c.fetchall()
-        if len(result) == 0:
-            return False
-        else:
-            return True
+        """Check if latest forecast for this date and time already in DB"""
+        table_check_limits = {'temperature': 2, 'pressure': 1}
+        request = '''SELECT * 
+                    FROM %s 
+                    WHERE datetime=:datetime 
+                    AND service=:service 
+                    ORDER BY timestamp DESC 
+                    LIMIT %s''' % (table, table_check_limits[table])
+        self.c.execute(request, {
+            'table': table,
+            'datetime': data['datetime'],
+            'service': data['service'],
+        })
+        db_data = self.c.fetchall()
+
+        if len(db_data) == 1:
+            if data['value'] == db_data[0][3]:
+                return True
+            else:
+                return False
+
+        if len(db_data) == 2:
+            result = False
+            # comparing timestamps.
+            if db_data[0][1] == db_data[1][1]:
+                for raw in db_data:
+                    if data['value'] == raw[3]:
+                        result = True
+            else:
+                if data['value'] == db_data[0]:
+                    result = True
+            return result
 
     def db_close(self):
         self.conn.close()
