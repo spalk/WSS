@@ -8,7 +8,7 @@ from app import db
 def index():
     db_inst = db.DB()
     data_yandex = db_inst.get_data_for_chart('yandex')
-    data_yandex2 = db_inst.get_data_for_chart2('yandex')
+    data_yandex2 = db_inst.get_data_for_chart3('yandex')
     data_rp5 = db_inst.get_data_for_chart('rp5')
     data_narodmon = db_inst.get_data_for_chart('narodmon')
     db_inst.db_close()
