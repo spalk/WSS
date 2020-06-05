@@ -8,6 +8,7 @@ am4core.ready(function() {
     var lighten = 0.7
     var transDur = 1000
     var transDurDiff = 300
+    var tensX = 0.7
 
     var chart = am4core.create("chart_yandex2", am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
@@ -17,28 +18,25 @@ am4core.ready(function() {
     console.log(DataYandex2)
 
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.tooltip.disabled = true;
+    //valueAxis.tooltip.disabled = true;
 
     // current datetime vertical line
     var range = dateAxis.axisRanges.create();
     range.date = new Date();
-    range.grid.stroke = am4core.color("red");
+    range.grid.stroke = am4core.color("black");
     range.grid.strokeWidth = 2;
     range.grid.strokeOpacity = 1;
 
     // absolute max
     var series = chart.series.push(new am4charts.LineSeries());
     series.dataFields.dateX = "date";
-    //series.dataFields.openValueY = "open";
     series.dataFields.valueY = "absolute_max";
     series.tooltipText = "absolute max: {valueY.value}";
     series.sequencedInterpolation = true;
-    //series.fillOpacity = 0.1;
     series.defaultState.transitionDuration = transDur;
     transDur += transDurDiff
-    series.tensionX = 0.8;
+    series.tensionX = tensX;
     series.stroke = am4core.color("red").lighten(+lighten);;
 
     // latest max
@@ -49,7 +47,7 @@ am4core.ready(function() {
     series2.sequencedInterpolation = true;
     series2.defaultState.transitionDuration = transDur;
     transDur += transDurDiff
-    series2.tensionX = 0.8;
+    series2.tensionX = tensX;
     series2.stroke = am4core.color("red");
 
     // latest min
@@ -62,7 +60,7 @@ am4core.ready(function() {
     series3.sequencedInterpolation = true;
     series3.defaultState.transitionDuration = transDur;
     transDur += transDurDiff
-    series3.tensionX = 0.8;
+    series3.tensionX = tensX;
     series3.stroke = am4core.color("blue")
 
     // absolute min
@@ -73,21 +71,31 @@ am4core.ready(function() {
     series4.sequencedInterpolation = true;
     series4.defaultState.transitionDuration = transDur;
     transDur += transDurDiff
-    series4.tensionX = 0.8;
+    series4.tensionX = tensX;
     series4.stroke = am4core.color("blue").lighten(+lighten);;
 
     //narodmon curve
-    /*var series3 = chart.series.push(new am4charts.LineSeries())
-    series3.data = DataNarodmon
-    series3.dataFields.dateX = "date";
-    series3.dataFields.valueY = "open";
-    series3.stroke = am4core.color("green");
-    series3.strokeWidth = 3;
-    series3.fillOpacity = 0.1;
-    series3.tooltipText = "val: {valueY.value}";*/
+    var series5 = chart.series.push(new am4charts.LineSeries())
+    series5.data = DataNarodmon
+    series5.dataFields.dateX = "date";
+    series5.dataFields.valueY = "open";
+    series5.stroke = am4core.color("green");
+    series5.strokeWidth = 2;
+    series5.tensionX = 0.9;
+    series5.tooltipText = "fact: {valueY.value}";
+    series5.defaultState.transitionDuration = transDur;
 
     chart.cursor = new am4charts.XYCursor();
     chart.cursor.xAxis = dateAxis;
     chart.scrollbarX = new am4core.Scrollbar();
+
+    // Create a horizontal scrollbar with previe and place it underneath the date axis
+    chart.scrollbarX = new am4charts.XYChartScrollbar();
+    chart.scrollbarX.series.push(series2);
+    chart.scrollbarX.series.push(series3);
+    chart.scrollbarX.parent = chart.bottomAxesContainer;
+
+    dateAxis.start = 0.5;
+    dateAxis.keepSelection = true;
 
 }); // end am4core.ready()
