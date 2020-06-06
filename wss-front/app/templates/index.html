@@ -23,7 +23,7 @@
         }
         </style>
 
-        <!-- Data for chart_1 -->
+        <!-- Data for wss-chart -->
         <script>
 			var DataYandex = {{ data_yandex|tojson }};
 			var DataRP5 = {{ data_rp5|tojson }};
@@ -37,12 +37,12 @@
 			<div class="container">
 				<a class="pagename current" href="#">WSS</a>
 				<a href="#">Temperature</a>
-				<a href="#">Pressure</a>
+				<a href="pressure">Pressure</a>
 				<a href="#">Balcony Condition</a>
 			</div>
 		</nav>
 		<button class="btn-close btn btn-sm">×</button>
-		<h2>Forecast and real temperature</h2>
+		<h2>Forecast and real temperature, °C</h2>
 		<div class="container">
 			<h3>Weather forecast provider: Yandex</h3>
             <div id="chart_yandex"></div>
