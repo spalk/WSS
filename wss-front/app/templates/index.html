@@ -16,7 +16,7 @@
 
         <!-- Styles -->
         <style>
-        #chart_yandex, #chart_yandex2, #chart_rp5 {
+        #chart_yandex, #chart_rp5 {
           width: 100%;
           height: 500px;
           max-width: 100%;
@@ -26,13 +26,10 @@
         <!-- Data for chart_1 -->
         <script>
 			var DataYandex = {{ data_yandex|tojson }};
-			var DataYandex2 = {{ data_yandex2|tojson }};
 			var DataRP5 = {{ data_rp5|tojson }};
 			var DataNarodmon = {{ data_narodmon|tojson }};
 		</script>
-		<script src="{{ url_for('static', filename='wss_chart_yandex.js')}}"></script>
-		<script src="{{ url_for('static', filename='wss_chart_yandex2.js')}}"></script>
-		<script src="{{ url_for('static', filename='wss_chart_rp5.js')}}"></script>
+		<script src="{{ url_for('static', filename='wss_chart.js')}}"></script>
 
 	</head>
 	<body>
@@ -45,16 +42,14 @@
 			</div>
 		</nav>
 		<button class="btn-close btn btn-sm">×</button>
+		<h2>Forecast and real temperature</h2>
 		<div class="container">
-			<h3>Yandex Forecast 2 and real data:</h3>
-            <div id="chart_yandex2"></div>
-		</div>
-		<div class="container">
-			<h3>Yandex Forecast and real data:</h3>
+			<h3>Weather forecast provider: Yandex</h3>
             <div id="chart_yandex"></div>
 		</div>
+		<hr />
 		<div class="container">
-			<h3>RP5 Forecast and real data:</h3>
+			<h3>Weather forecast provider: RP5</h3>
             <div id="chart_rp5"></div>
 		</div>
 	</body>

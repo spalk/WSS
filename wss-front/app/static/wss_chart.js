@@ -1,4 +1,4 @@
-am4core.ready(function() {
+function wssChart(div, data_from_service, data_real) {
 
     // Themes begin
     am4core.useTheme(am4themes_animated);
@@ -10,12 +10,12 @@ am4core.ready(function() {
     var transDurDiff = 300
     var tensX = 0.7
 
-    var chart = am4core.create("chart_yandex2", am4charts.XYChart);
+    var chart = am4core.create(div, am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
     chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm:ss";
-    chart.data = DataYandex2;
+    chart.data = data_from_service;
 
-    console.log(DataYandex2)
+    // console.log(chart.data)
 
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -76,9 +76,9 @@ am4core.ready(function() {
 
     //narodmon curve
     var series5 = chart.series.push(new am4charts.LineSeries())
-    series5.data = DataNarodmon
+    series5.data = data_real
     series5.dataFields.dateX = "date";
-    series5.dataFields.valueY = "open";
+    series5.dataFields.valueY = "absolute_max";
     series5.stroke = am4core.color("green");
     series5.strokeWidth = 2;
     series5.tensionX = 0.9;
@@ -97,5 +97,9 @@ am4core.ready(function() {
 
     dateAxis.start = 0.5;
     dateAxis.keepSelection = true;
+}
 
+am4core.ready(function(){
+    wssChart("chart_yandex", DataYandex, DataNarodmon);
+    wssChart("chart_rp5", DataRP5, DataNarodmon);
 }); // end am4core.ready()
