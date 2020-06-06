@@ -79,3 +79,8 @@ or you can install all required modules according to requirements txt-file:
     
     ```
      - certificates for https you can get with certbot help: https://certbot.eff.org/ 
+     - to update and reload new code on server:
+     ```
+    git pull
+    sudo supervisorctl restart wss-front
+     ```
