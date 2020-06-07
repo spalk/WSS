@@ -84,5 +84,14 @@ class DB:
         result_raws = self.c.fetchall()
         return result_raws
 
+    def save_sensor_data(self, sensor_name, parameter, value):
+        dt = datetime.datetime.now().isoformat(sep=' ', timespec='seconds')
+        data_tpl = (dt, dt, value, sensor_name)
+        if parameter == 't':
+            self.c.execute('INSERT INTO temperature(timestamp, datetime, value, service) VALUES (?,?,?,?)', data_tpl)
+        if parameter == 'p':
+            self.c.execute('INSERT INTO pressure(timestamp, datetime, value, service) VALUES (?,?,?,?)', data_tpl)
+        self.conn.commit()
+
     def db_close(self):
         self.conn.close()
