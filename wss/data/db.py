@@ -21,8 +21,9 @@ class DB:
         self.c = self.conn.cursor()
 
         # Check if tables exist
-        if not self.table_exist('temperature') or not self.table_exist('pressure') or not self.table_exist('humidity'):
-            self.create_tables()
+        for table in ['temperature', 'pressure', 'humidity']:
+            if not self.table_exist(table):
+                self.create_table(table)
 
     def save_forecast(self, data: list):
         temp_data = []
@@ -56,34 +57,15 @@ class DB:
         else:
             return False
 
-    def create_tables(self):
-        """Create tables"""
-        # temperature
-        self.c.execute("""CREATE TABLE temperature
+    def create_table(self, table):
+        """Create table"""
+        self.c.execute("""CREATE TABLE %s
                               (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                                timestamp TEXT NOT NULL,
                                datetime TEXT NOT NULL,
                                value REAL NOT NULL,
                                service TEXT NOT NULL)
-                       """)
-
-        # pressure
-        self.c.execute("""CREATE TABLE pressure
-                                      (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                       timestamp TEXT NOT NULL,
-                                       datetime TEXT NOT NULL,
-                                       value REAL NOT NULL,
-                                       service TEXT NOT NULL)
-                               """)
-
-        # humidity
-        self.c.execute("""CREATE TABLE humidity
-                                              (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                               timestamp TEXT NOT NULL,
-                                               datetime TEXT NOT NULL,
-                                               value REAL NOT NULL,
-                                               service TEXT NOT NULL)
-                                       """)
+                       """ % table)
 
     def raw_exist(self, table: str, data: dict) -> bool:
         """Check if latest forecast for this date and time already in DB"""
