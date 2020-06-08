@@ -44,10 +44,13 @@ def sensor_data():
     received_key = request.args.get('key')
     true_key = get_md5(sensor_name)[:6]
     if received_key == true_key:
-        db_inst = db.DB()
-        db_inst.save_sensor_data(sensor_name, parameter, value)
-        db_inst.db_close()
-        return 'ok'
+        if parameter in ['t', 'p', 'h']:
+            db_inst = db.DB()
+            db_inst.save_sensor_data(sensor_name, parameter, value)
+            db_inst.db_close()
+            return 'ok'
+        else:
+            return 'Error: unknown parameter'
     else:
         return 'Error: key is wrong'
 

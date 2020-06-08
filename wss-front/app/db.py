@@ -91,6 +91,8 @@ class DB:
             self.c.execute('INSERT INTO temperature(timestamp, datetime, value, service) VALUES (?,?,?,?)', data_tpl)
         if parameter == 'p':
             self.c.execute('INSERT INTO pressure(timestamp, datetime, value, service) VALUES (?,?,?,?)', data_tpl)
+        if parameter == 'h':
+            self.c.execute('INSERT INTO humidity(timestamp, datetime, value, service) VALUES (?,?,?,?)', data_tpl)
         self.conn.commit()
 
     def db_close(self):
