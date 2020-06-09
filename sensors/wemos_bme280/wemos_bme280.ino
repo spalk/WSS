@@ -1,7 +1,5 @@
 #include <ESP8266WiFi.h>
 #include <Adafruit_BME280.h>
-#include <string>
-using std::string;
 
 Adafruit_BME280 bme; // I2C
 
