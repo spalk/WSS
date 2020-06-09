@@ -35,7 +35,7 @@ def pressure():
                            data_narodmon=data_narodmon)
 
 
-@app.route('/sensor-data')
+@app.route('/sensor-data', methods=['GET', 'POST'])
 def sensor_data():
     # http://localhost:5000/sensor-data?sensorname=esp8266&parameter=t&value=24&key=123
     sensor_name = request.args.get('sensorname')
