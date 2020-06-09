@@ -92,12 +92,12 @@ class DB:
         if len(db_data) == 2:
             result = False
             # comparing timestamps.
-            if db_data[0][1] == db_data[1][1]:
+            if db_data[0][1][0:16] == db_data[1][1][0:16]:
                 for raw in db_data:
                     if data['value'] == raw[3]:
                         result = True
             else:
-                if data['value'] == db_data[0]:
+                if data['value'] == db_data[0][3]:
                     result = True
             return result
 
