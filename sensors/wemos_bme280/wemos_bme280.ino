@@ -1,5 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <Adafruit_BME280.h>
+#include <string>
+using std::string;
 
 Adafruit_BME280 bme; // I2C
 
@@ -55,25 +57,31 @@ void loop() {
     dtostrf(getHumidity(), 5, 2, humidityString);
 
     // send t
+    Serial.println();
+    Serial.println("*** Sending temperature ***");
     par = 't';
     req = create_url(par, temperatureString);
     Serial.println(req);
     send_data(req);
-    delay(1000);
+    delay(100);
 
     // send p
+    Serial.println();
+    Serial.println("*** Sending pressure ***");
     par = 'p';
     req = create_url(par, pressureString);
     Serial.println(req);
     send_data(req);
-    delay(1000);
+    delay(100);
 
     //send h
+    Serial.println();
+    Serial.println("*** Sending humidity ***");
     par = 'h';
     req = create_url(par, humidityString);
     Serial.println(req);
     send_data(req);
-    delay(5000);
+    delay(600000);
 }
 
 float getTemperature(){
@@ -129,10 +137,10 @@ String create_url(String p, String v){
 
 void send_data (String url){
     // sending data to server
-    Serial.print("connecting to ");
-    Serial.println(host); // Use WiFiClient class to create TCP connections
-    WiFiClient client;
-    const int httpPort = 80;
+    Serial.print("Connecting to: ");
+    Serial.println(host);
+    WiFiClientSecure client;
+    const int httpPort = 443;
     if (!client.connect(host, httpPort)) {
         Serial.println("connection failed");
         return;
@@ -141,7 +149,11 @@ void send_data (String url){
     Serial.print("Requesting URL: ");
     Serial.println(url);
     // This will send the request to the server
-    client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+    client.print(String("GET ") + url +
+                        " HTTP/1.1\r\n" +
+                        "Host: " + host + "\r\n" +
+                        "Upgrade-Insecure-Requests: 1" +
+                        "Connection: close\r\n\r\n");
     unsigned long timeout = millis();
     while (client.available() == 0) {
         if (millis() - timeout > 5000){
@@ -151,10 +163,11 @@ void send_data (String url){
         }
     }
     // Read all the lines of the reply from server and print them to Serial
+    Serial.println("Result: ");
     while (client.available()){
         String line = client.readStringUntil('\r');
         Serial.print(line);
     }
     Serial.println();
-    Serial.println("closing connection");
+    Serial.println("Closing connection");
 }
