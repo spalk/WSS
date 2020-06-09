@@ -29,16 +29,16 @@
 			var DataRP5 = {{ data_rp5|tojson }};
 			var DataNarodmon = {{ data_narodmon|tojson }};
 		</script>
-		<script src="{{ url_for('static', filename='wss_chart.js')}}"></script>
+		<script src="{{ url_for('static', filename='wss_chart_index.js')}}"></script>
 
 	</head>
 	<body>
 		<nav class="nav" tabindex="-1" onclick="this.focus()">
 			<div class="container">
-				<a class="pagename current" href="#">WSS</a>
+				<a href="/">WSS</a>
 				<a href="/">Temperature</a>
-				<a href="#">Pressure</a>
-				<a href="#">Balcony Condition</a>
+				<a class="pagename current" href="#">Pressure</a>
+				<a href="balcony">Balcony Condition</a>
 			</div>
 		</nav>
 		<button class="btn-close btn btn-sm">×</button>

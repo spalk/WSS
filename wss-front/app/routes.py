@@ -34,6 +34,24 @@ def pressure():
                            data_rp5=data_rp5,
                            data_narodmon=data_narodmon)
 
+@app.route('/balcony')
+def balcony():
+    db_inst = db.DB()
+    data_yandex = db_inst.get_data_for_chart('yandex', history_days=0)
+    data_rp5 = db_inst.get_data_for_chart('rp5', history_days=0)
+    data_narodmon = db_inst.get_data_for_chart('narodmon')
+    data_sensor_t = db_inst.get_data_for_chart('wemos_south_balcony')
+    data_sensor_h = db_inst.get_data_for_chart('wemos_south_balcony', parameter='humidity')
+    db_inst.db_close()
+
+    return render_template('balcony.html',
+                           data_yandex=data_yandex,
+                           data_rp5=data_rp5,
+                           data_narodmon=data_narodmon,
+                           data_sensor_t=data_sensor_t,
+                           data_sensor_h=data_sensor_h
+                           )
+
 
 @app.route('/sensor-data', methods=['GET', 'POST'])
 def sensor_data():
