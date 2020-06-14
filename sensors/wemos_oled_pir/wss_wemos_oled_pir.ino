@@ -1,7 +1,7 @@
 #include <Wire.h>               // Only needed for Arduino 1.6.5 and earlier
 #include "SH1106.h"
 
-#include "font_tinos_40.h"
+#include "font_lato_light_48.h"
 
 SH1106 display(0x3c, D2, D1);     // ADDRESS, SDA, SCL
 
@@ -23,7 +23,7 @@ void setup()
 
 void weatherToDisplay() {
     display.setTextAlignment(TEXT_ALIGN_CENTER);
-    display.setFont((uint8_t *) Tinos_Bold_48);
+    display.setFont((uint8_t *) Lato_Light_48);
     display.drawString(64, 0, "+24.6");
     display.drawHorizontalLine(0, 52, 128);
     display.setFont(ArialMT_Plain_10);
