@@ -73,15 +73,25 @@ class DB:
         result_raw = self.c.fetchone()
         return result_raw[0]
 
-    def get_two_latest(self, dt, parameter, service):
-        req = '''SELECT "value" 
+    def get_two_latest(self, dt, parameter, service, column="value"):
+        req = '''SELECT %s 
                  FROM %s 
                  WHERE service = "%s"
                  AND datetime = "%s"
                  ORDER BY timestamp DESC 
-                 LIMIT 2''' % (parameter, service, dt)
+                 LIMIT 2''' % (column, parameter, service, dt)
         self.c.execute(req)
         result_raws = self.c.fetchall()
+        return result_raws
+
+    def get_last_value(self, parameter, service):
+        req = '''SELECT value 
+                 FROM %s 
+                 WHERE service = "%s"
+                 ORDER BY timestamp DESC 
+                 LIMIT 1''' % (parameter, service)
+        self.c.execute(req)
+        result_raws = self.c.fetchone()
         return result_raws
 
     def save_sensor_data(self, sensor_name, parameter, value):
