@@ -1,6 +1,8 @@
 #include <Wire.h>               // Only needed for Arduino 1.6.5 and earlier
 #include "SH1106.h"
 
+#include "font_tinos_40.h"
+
 SH1106 display(0x3c, D2, D1);     // ADDRESS, SDA, SCL
 
 // PIR
@@ -20,14 +22,12 @@ void setup()
 }
 
 void weatherToDisplay() {
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
+    display.setTextAlignment(TEXT_ALIGN_CENTER);
+    display.setFont((uint8_t *) Tinos_Bold_48);
+    display.drawString(64, 0, "+24.6");
+    display.drawHorizontalLine(0, 52, 128);
     display.setFont(ArialMT_Plain_10);
-    display.drawString(0, 10, "Current weather:");
-    display.setFont(ArialMT_Plain_10);
-    display.drawString(0, 20, "+24");
-    display.setFont(ArialMT_Plain_10);
-    display.drawString(0, 30, "Weather tomorrow:");
-    display.drawString(0, 40, "+22..+25");
+    display.drawString(64, 54, "Tomorrow:  +22..+24");
 }
 
 void loop()
