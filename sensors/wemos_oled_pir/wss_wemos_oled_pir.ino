@@ -17,10 +17,10 @@ int pirPin = D7;
 int pirVal;
 
 //receiving data from api
-String wssIgnore;
 String currentT;
 String forecastT;
 String dt;
+String service;
 int pos1 = 0;
 int pos2 = 0;
 int pos3 = 0;
@@ -78,9 +78,14 @@ void split(String input){
             }
         }
     }
-    Serial.println(pos1);
-    Serial.println(pos2);
-    Serial.println(pos3);
+    currentT = input.substring(0, pos1);
+    forecastT = input.substring(pos1+1, pos2);
+    dt = input.substring(pos2+1, pos3);
+    service = input.substring(pos3+1, input.length());
+    Serial.println(currentT);
+    Serial.println(forecastT);
+    Serial.println(dt);
+    Serial.println(service);
 }
 
 void get_data (){
