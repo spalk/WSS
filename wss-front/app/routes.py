@@ -112,7 +112,7 @@ def api_weather_and_forecast():
 
     db_inst.db_close()
 
-    data = '%s,%s,%s,%s' % (current_temp, forecast_temp_display, forecast_date_display, service)
+    data = 'wss-data:%s,%s,%s,%s' % (current_temp, forecast_temp_display, forecast_date_display, service)
     return data
 
 
