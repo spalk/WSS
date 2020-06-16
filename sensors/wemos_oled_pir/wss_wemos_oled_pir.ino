@@ -1,24 +1,47 @@
 #include <Wire.h>               // Only needed for Arduino 1.6.5 and earlier
 #include "SH1106.h"
-
 #include "font_lato_light_48.h"
+#include <ESP8266WiFi.h>
 
+// Wifi Settings
+const char* ssid = "Keenetic-9275";
+const char* password = "icbpnHXz";
+const char* host = "85d.ru";
+const char* url = "/api/weather-and-forecast";
+
+// Display
 SH1106 display(0x3c, D2, D1);     // ADDRESS, SDA, SCL
 
 // PIR
 int pirPin = D7;
 int pirVal;
 
+WiFiClient nmClient;
+
 void setup()
 {
     Serial.begin(115200);
-    Serial.println();
-    Serial.println();
-    Serial.println("Setup");
+    delay(10);
 
     // Initialising the UI will init the display too.
     display.init();
     display.flipScreenVertically();
+
+    // Connecting to WiFi network
+    Serial.print("Connecting to ");
+    Serial.println(ssid);
+    WiFi.begin(ssid, password);
+
+    Serial.print("Delay 5 sec...");
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("");
+    Serial.println("WiFi connected");
+
+    // Printing the ESP IP address
+    Serial.println(WiFi.localIP());
 }
 
 void weatherToDisplay() {
@@ -29,6 +52,61 @@ void weatherToDisplay() {
     display.setFont(ArialMT_Plain_10);
     display.drawString(64, 54, "Tomorrow:  +22..+24");
 }
+
+void get_data (){
+    WiFiClientSecure client;
+    const int httpPort = 443;
+    if (!client.connect(host, httpPort)) {
+        Serial.println("connection failed");
+        return;
+    }
+
+    // This will send the request to the server
+    client.print(String("GET ") + url +
+                        " HTTP/1.1\r\n" +
+                        "Host: " + host + "\r\n" +
+                        "Connection: close\r\n\r\n");
+    unsigned long timeout = millis();
+    while (client.available() == 0) {
+        if (millis() - timeout > 5000){
+            Serial.println(">>> Client Timeout !");
+            client.stop();
+            return;
+        }
+    }
+    // Read all the lines of the reply from server and print them to Serial
+    Serial.println("Result: ");
+    bool read_content = false;
+    while (client.available()){
+        String line = client.readStringUntil('\n');
+        if (line == "\r"){
+            Serial.println("headers received");
+            read_content = true;
+        }
+        if (read_content == true){
+            Serial.println("content found");
+            Serial.println(line);
+        }
+
+    }
+    Serial.println();
+    Serial.println("Closing connection");
+}
+
+
+/*/////
+String input = "123,456";
+int firstVal, secondVal;
+
+for (int i = 0; i < input.length(); i++) {
+  if (input.substring(i, i+1) == ",") {
+    firstVal = input.substring(0, i).toInt();
+    secondVal = input.substring(i+1).toInt();
+    break;
+  }
+}
+////*/
+
 
 void loop()
 {
@@ -48,5 +126,6 @@ void loop()
         display.display();
         delay(200);
     }
-    delay(1000);
+    get_data();
+    delay(10000);
 }
