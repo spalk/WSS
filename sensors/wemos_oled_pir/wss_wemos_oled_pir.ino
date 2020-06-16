@@ -16,6 +16,15 @@ SH1106 display(0x3c, D2, D1);     // ADDRESS, SDA, SCL
 int pirPin = D7;
 int pirVal;
 
+//receiving data from api
+String wssIgnore;
+String currentT;
+String forecastT;
+String dt;
+int pos1 = 0;
+int pos2 = 0;
+int pos3 = 0;
+
 WiFiClient nmClient;
 
 void setup()
@@ -53,6 +62,27 @@ void weatherToDisplay() {
     display.drawString(64, 54, "Tomorrow:  +22..+24");
 }
 
+void split(String input){
+    Serial.println("Splitting:");
+    Serial.println(input);
+    input.remove(0,9);
+    Serial.println(input);
+    for (int i = 0; i < input.length(); i++) {
+        if (input.substring(i, i+1) == ",") {
+            if (pos1 == 0){
+                pos1 = i;
+            }else if (pos2 == 0){
+                pos2 = i;
+            }else if (pos3 == 0){
+                pos3 = i;
+            }
+        }
+    }
+    Serial.println(pos1);
+    Serial.println(pos2);
+    Serial.println(pos3);
+}
+
 void get_data (){
     WiFiClientSecure client;
     const int httpPort = 443;
@@ -79,33 +109,15 @@ void get_data (){
     bool read_content = false;
     while (client.available()){
         String line = client.readStringUntil('\n');
-        if (line == "\r"){
-            Serial.println("headers received");
-            read_content = true;
+        if (line.startsWith("wss-data:")){
+            split(line);
         }
-        if (read_content == true){
-            Serial.println("content found");
-            Serial.println(line);
-        }
-
     }
     Serial.println();
     Serial.println("Closing connection");
 }
 
 
-/*/////
-String input = "123,456";
-int firstVal, secondVal;
-
-for (int i = 0; i < input.length(); i++) {
-  if (input.substring(i, i+1) == ",") {
-    firstVal = input.substring(0, i).toInt();
-    secondVal = input.substring(i+1).toInt();
-    break;
-  }
-}
-////*/
 
 
 void loop()
