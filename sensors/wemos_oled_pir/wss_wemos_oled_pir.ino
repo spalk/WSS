@@ -6,64 +6,54 @@
 // Wifi Settings
 const char* ssid = "Keenetic-9275";
 const char* password = "icbpnHXz";
+
+// Host
 const char* host = "85d.ru";
 const char* url = "/api/weather-and-forecast";
 
 // Display
 SH1106 display(0x3c, D2, D1);     // ADDRESS, SDA, SCL
+int showTimeout = 2000; // time before off display
 
 // PIR
 int pirPin = D7;
-int pirVal;
+int pirVal; //low = no motion, high = motion
 
-//receiving data from api
+// Data from api
 String currentT;
 String forecastT;
 String dt;
 String service;
+
+// Delimiter positions
 int pos1 = 0;
 int pos2 = 0;
 int pos3 = 0;
+int dataTimeout = 1000; // time before off display
+
+// Timers
+unsigned long data_time;
+unsigned long show_time;
+
 
 WiFiClient nmClient;
 
-void setup()
-{
-    Serial.begin(115200);
-    delay(10);
-
-    // Initialising the UI will init the display too.
-    display.init();
-    display.flipScreenVertically();
-
-    // Connecting to WiFi network
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password);
-
-    Serial.print("Delay 5 sec...");
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("WiFi connected");
-
-    // Printing the ESP IP address
-    Serial.println(WiFi.localIP());
+void ProgressBar(int progress){
+    display.drawProgressBar(0, 32, 120, 10, progress);
 }
 
-void weatherToDisplay() {
+void log(String msg, int progress){
+    display.clear();
     display.setTextAlignment(TEXT_ALIGN_CENTER);
-    display.setFont((uint8_t *) Lato_Light_48);
-    display.drawString(64, 0, "+24.6");
-    display.drawHorizontalLine(0, 52, 128);
-    display.setFont(ArialMT_Plain_10);
-    display.drawString(64, 54, "Tomorrow:  +22..+24");
+    display.drawString(64, 10, msg);
+    ProgressBar(progress);
+    display.display();
+    Serial.println(msg);
+    delay(100);
 }
 
 void split(String input){
-    Serial.println("Splitting:");
+    Serial.print("Splitting: ");
     Serial.println(input);
     input.remove(0,9);
     Serial.println(input);
@@ -92,11 +82,11 @@ void get_data (){
     WiFiClientSecure client;
     const int httpPort = 443;
     if (!client.connect(host, httpPort)) {
-        Serial.println("connection failed");
+        Serial.println("Connection failed");
         return;
     }
 
-    // This will send the request to the server
+    // Send the request to the server
     client.print(String("GET ") + url +
                         " HTTP/1.1\r\n" +
                         "Host: " + host + "\r\n" +
@@ -109,40 +99,102 @@ void get_data (){
             return;
         }
     }
-    // Read all the lines of the reply from server and print them to Serial
+
+    // Read reply from server
     Serial.println("Result: ");
-    bool read_content = false;
     while (client.available()){
         String line = client.readStringUntil('\n');
         if (line.startsWith("wss-data:")){
             split(line);
+            break;
         }
     }
-    Serial.println();
     Serial.println("Closing connection");
 }
 
+void mainView() {
+    display.clear();
+    display.setTextAlignment(TEXT_ALIGN_CENTER);
+    display.setFont((uint8_t *) Lato_Light_48);
+    display.drawString(64, 0, currentT);
+    display.drawHorizontalLine(0, 52, 128);
+    display.setFont(ArialMT_Plain_10);
+    display.drawString(64, 54, dt + "(RP5):  " + forecastT);
+    display.display();
+}
 
+void displayOff() {
+    display.clear();
+    display.display();
+}
 
+void setup()
+{
+    Serial.begin(115200);
+    delay(10);
+
+    // Initialising display
+    display.init();
+    display.flipScreenVertically();
+
+    // Welcome screen
+    display.clear();
+    display.setTextAlignment(TEXT_ALIGN_CENTER);
+    display.setFont(ArialMT_Plain_10);
+    display.drawString(64, 0, "WELCOME TO");
+    display.setFont((uint8_t *) Lato_Light_48);
+    display.drawString(64, 16, "WSS");
+    display.display();
+    delay(1000);
+    display.clear();
+    ProgressBar(0);
+
+    // Connecting to WiFi network
+    log("Connecting to WiFi" + String(ssid), 10);
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    ProgressBar(20);
+    log("WiFi connected: " + String(WiFi.localIP()), 30);
+
+    // Get data
+    log("Getting first data", 50);
+    get_data();
+    log("Data received successfully", 70);
+    log("Loading main screen", 80);
+    ProgressBar(90);
+    ProgressBar(100);
+    delay(500);
+    data_time = millis();
+
+    // Show main view
+    mainView();
+    show_time = millis();
+}
 
 void loop()
 {
+    // Motion detection
     pirVal = digitalRead(pirPin);
-    //low = no motion, high = motion
-    if (pirVal == LOW)
-    {
+    if (pirVal == LOW){
         Serial.println("No motion");
-        display.clear();
-        display.display();
+        if (millis() - show_time < showTimeout){
+            displayOff();
+        }
+    } else {
+        Serial.println("Motion detected");
+        mainView();
+        show_time = millis();
     }
-    else
-    {
-        Serial.println("Motion detected  ALARM");
-        display.clear();
-        weatherToDisplay();
-        display.display();
-        delay(200);
+
+    // Data update
+    if (millis() - data_time > dataTimeout){
+        get_data();
+        data_time = millis();
     }
-    get_data();
-    delay(10000);
+
+    // Delay
+    delay(100);
 }
