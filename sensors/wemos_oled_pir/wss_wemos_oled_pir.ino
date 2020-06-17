@@ -13,7 +13,7 @@ const char* url = "/api/weather-and-forecast";
 
 // Display
 SH1106 display(0x3c, D2, D1);     // ADDRESS, SDA, SCL
-int showTimeout = 2000; // time before off display
+int showTimeout = 10000; // time before off display
 
 // PIR
 int pirPin = D7;
@@ -29,7 +29,7 @@ String service;
 int pos1 = 0;
 int pos2 = 0;
 int pos3 = 0;
-int dataTimeout = 1000; // time before off display
+int dataTimeout = 300000; // time before off display
 
 // Timers
 unsigned long data_time;
@@ -49,7 +49,7 @@ void log(String msg, int progress){
     ProgressBar(progress);
     display.display();
     Serial.println(msg);
-    delay(100);
+    delay(800);
 }
 
 void split(String input){
@@ -119,7 +119,7 @@ void mainView() {
     display.drawString(64, 0, currentT);
     display.drawHorizontalLine(0, 52, 128);
     display.setFont(ArialMT_Plain_10);
-    display.drawString(64, 54, dt + "(RP5):  " + forecastT);
+    display.drawString(64, 54, "RP5 for " + dt + ":  " + forecastT);
     display.display();
 }
 
@@ -141,29 +141,33 @@ void setup()
     display.clear();
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.setFont(ArialMT_Plain_10);
-    display.drawString(64, 0, "WELCOME TO");
-    display.setFont((uint8_t *) Lato_Light_48);
-    display.drawString(64, 16, "WSS");
+    display.drawHorizontalLine(0, 8, 128);
+    display.drawHorizontalLine(0, 42, 128);
     display.display();
-    delay(1000);
+    delay(500);
+    display.drawString(64, 10, "welcome to");
+    display.drawString(64, 30, "WSS");
+    display.display();
+    delay(3000);
     display.clear();
     ProgressBar(0);
-
+    delay(1000);
     // Connecting to WiFi network
-    log("Connecting to WiFi" + String(ssid), 10);
+    log("Connecting to WiFi...", 10);
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
     }
     ProgressBar(20);
-    log("WiFi connected: " + String(WiFi.localIP()), 30);
+    delay(1000);
+    log("WiFi connected successfully", 30);
 
     // Get data
-    log("Getting first data", 50);
+    log("Receiving data...", 50);
     get_data();
     log("Data received successfully", 70);
-    log("Loading main screen", 80);
+    log("Loading main screen...", 80);
     ProgressBar(90);
     ProgressBar(100);
     delay(500);
@@ -180,7 +184,7 @@ void loop()
     pirVal = digitalRead(pirPin);
     if (pirVal == LOW){
         Serial.println("No motion");
-        if (millis() - show_time < showTimeout){
+        if (millis() - show_time > showTimeout){
             displayOff();
         }
     } else {
@@ -196,5 +200,5 @@ void loop()
     }
 
     // Delay
-    delay(100);
+    delay(1000);
 }
