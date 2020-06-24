@@ -117,9 +117,9 @@ void mainView() {
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.setFont((uint8_t *) Lato_Light_48);
     display.drawString(64, 0, currentT);
-    display.drawHorizontalLine(0, 52, 128);
+    display.drawHorizontalLine(0, 51, 128);
     display.setFont(ArialMT_Plain_10);
-    display.drawString(64, 54, "RP5 for " + dt + ":  " + forecastT);
+    display.drawString(64, 52, "RP5 for " + dt + ":  " + forecastT);
     display.display();
 }
 
@@ -135,7 +135,7 @@ void setup()
 
     // Initialising display
     display.init();
-    display.flipScreenVertically();
+    //display.flipScreenVertically();
 
     // Welcome screen
     display.clear();
