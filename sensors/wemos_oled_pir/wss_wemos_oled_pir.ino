@@ -116,10 +116,10 @@ void mainView() {
     display.clear();
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.setFont((uint8_t *) Lato_Light_48);
-    display.drawString(64, 0, currentT);
-    display.drawHorizontalLine(0, 51, 128);
+    display.drawString(64, -5, currentT);
+    display.drawHorizontalLine(0, 48, 128);
     display.setFont(ArialMT_Plain_10);
-    display.drawString(64, 52, "RP5 for " + dt + ":  " + forecastT);
+    display.drawString(64, 50, "RP5 for " + dt + ":  " + forecastT);
     display.display();
 }
 
