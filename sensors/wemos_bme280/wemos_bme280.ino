@@ -1,16 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <Adafruit_BME280.h>
-#include <string>
-using std::string;
 
 Adafruit_BME280 bme; // I2C
 
 // Replace with your network details
-const char* ssid = "YOUR_WIFI";
-const char* password = "WIFI_PASSWORD";
-const char* host = "hostname.com";
-const char* sensorname = "wemos";
-const char* key = "key_phrase";  // first 6 symbols of md5 hash of sensorname
+const char* ssid = "Keenetic-9275";
+const char* password = "icbpnHXz";
+const char* host = "85d.ru";
+const char* sensorname = "wemos_south_balcony";
+const char* key = "9b33a5";  // first 6 symbols of md5 hash of sensorname
 float h, t, p;
 char temperatureString[6];
 char humidityString[6];
@@ -93,7 +91,7 @@ float getTemperature(){
         t = t+valt;
     }
     t=t/30;
-    return t;
+    return t-1;
 }
 
 float getPressure(){
@@ -152,7 +150,6 @@ void send_data (String url){
     client.print(String("GET ") + url +
                         " HTTP/1.1\r\n" +
                         "Host: " + host + "\r\n" +
-                        "Upgrade-Insecure-Requests: 1" +
                         "Connection: close\r\n\r\n");
     unsigned long timeout = millis();
     while (client.available() == 0) {
