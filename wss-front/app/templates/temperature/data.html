@@ -1,0 +1,7 @@
+        <!-- Data for wss-chart -->
+        <script>
+            var DataYandex = {{ data_yandex|tojson }};
+            var DataRP5 = {{ data_rp5|tojson }};
+            var DataNarodmon = {{ data_narodmon|tojson }};
+        </script>
+        <script src="{{ url_for('static', filename='wss_chart_index.js')}}"></script>

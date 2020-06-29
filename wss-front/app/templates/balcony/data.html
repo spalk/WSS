@@ -1,0 +1,9 @@
+<!-- Data for wss-chart -->
+        <script>
+			var DataYandex = {{ data_yandex|tojson }};
+			var DataRP5 = {{ data_rp5|tojson }};
+			var DataNarodmon = {{ data_narodmon|tojson }};
+			var DataSensorT = {{ data_sensor_t|tojson }};
+			var DataSensorH = {{ data_sensor_h|tojson }};
+		</script>
+		<script src="{{ url_for('static', filename='wss_chart_balcony.js')}}"></script>

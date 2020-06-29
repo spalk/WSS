@@ -8,6 +8,7 @@ from app.config import config
 
 @app.route('/')
 @app.route('/index')
+@app.route('/temperature')
 def index():
     db_inst = db.DB()
     data_yandex = db_inst.get_data_for_chart('yandex')
@@ -15,7 +16,8 @@ def index():
     data_narodmon = db_inst.get_data_for_chart('narodmon')
     db_inst.db_close()
 
-    return render_template('index.html',
+    return render_template('temperature.html',
+                           title='Temperature',
                            data_yandex=data_yandex,
                            data_rp5=data_rp5,
                            data_narodmon=data_narodmon)
@@ -45,6 +47,7 @@ def balcony():
     db_inst.db_close()
 
     return render_template('balcony.html',
+                           title='Balcony Condition',
                            data_yandex=data_yandex,
                            data_rp5=data_rp5,
                            data_narodmon=data_narodmon,
