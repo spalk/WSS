@@ -1,56 +1,14 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "main.html" -%}
 
-		<title>Balcony Conditions</title>
+{% block head -%}
+    {% include "parts/amcharts.html" %}
+    {% include "balcony/style.html" %}
+    {% include "balcony/data.html" %}
+{%- endblock head %}
 
-		<link href="//mincss.com/entireframework.min.css" rel="stylesheet" type="text/css">
-
-        <!-- AmCharts -->
-        <!-- Resources -->
-        <script src="https://www.amcharts.com/lib/4/core.js"></script>
-        <script src="https://www.amcharts.com/lib/4/charts.js"></script>
-        <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
-
-        <!-- Styles -->
-        <style>
-        #chart_south_balcony {
-          width: 100%;
-          height: 500px;
-          max-width: 100%;
-        }
-        </style>
-
-        <!-- Data for wss-chart -->
-        <script>
-			var DataYandex = {{ data_yandex|tojson }};
-			var DataRP5 = {{ data_rp5|tojson }};
-			var DataNarodmon = {{ data_narodmon|tojson }};
-			var DataSensorT = {{ data_sensor_t|tojson }};
-			var DataSensorH = {{ data_sensor_h|tojson }};
-		</script>
-		<script src="{{ url_for('static', filename='wss_chart_balcony.js')}}"></script>
-
-	</head>
-	<body>
-		<nav class="nav" tabindex="-1" onclick="this.focus()">
-			<div class="container">
-				<a href="/">WSS</a>
-				<a href="/">Temperature</a>
-				<a href="pressure">Pressure</a>
-				<a class="pagename current"  href="#">Balcony Condition</a>
-			</div>
-		</nav>
-		<button class="btn-close btn btn-sm">×</button>
-		<h2>Real temperature inside and outside + forecast, mmhg</h2>
-		<div class="container">
-			<h3>South Balcony Conditions Live:</h3>
-            <div id="chart_south_balcony"></div>
-		</div>
-	</body>
-</html>
+{% block content -%}
+    {% include "balcony/content.html" %}
+{%- endblock content %}
 
 
 

@@ -1,0 +1,11 @@
+{% extends "main.html" -%}
+
+{% block head -%}
+    {% include "parts/amcharts.html" %}
+    {% include "temperature/style.html" %}
+    {% include "temperature/data.html" %}
+{%- endblock head %}
+
+{% block content -%}
+    {% include "temperature/content.html" %}
+{%- endblock content %}

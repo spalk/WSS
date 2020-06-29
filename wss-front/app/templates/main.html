@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{ title }}</title>
+		<link href="{{ url_for('static', filename='entireframework.min.css') }}" rel="stylesheet" type="text/css">
+		{% block head %}
+        {% endblock head %}
+	</head>
+	<body>
+		<nav class="nav" tabindex="-1" onclick="this.focus()">
+			<div class="container">
+				<a href="/">WSS</a>
+				<a href="temperature">Temperature</a>
+				<a href="pressure">Pressure</a>
+				<a href="balcony">Balcony</a>
+				<a href="trends">Trends</a>
+			</div>
+		</nav>
+		<button class="btn-close btn btn-sm">×</button>
+		{% block content %}
+        {% endblock content %}
+	</body>
+</html>
