@@ -5,11 +5,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{{ title }}</title>
 		<link href="{{ url_for('static', filename='entireframework.min.css') }}" rel="stylesheet" type="text/css">
+		<script src="{{ url_for('static', filename='wss.js')}}"></script>
 		{% block head %}
         {% endblock head %}
 	</head>
 	<body>
-		<nav class="nav" tabindex="-1" onclick="this.focus()">
+		<nav class="nav" id="nav" tabindex="-1" onclick="this.focus()">
 			<div class="container">
 				<a href="/">WSS</a>
 				<a href="temperature">Temperature</a>
