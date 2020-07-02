@@ -65,9 +65,21 @@ am4core.ready(function(){
     series4.stroke = am4core.color("red");
     series4.strokeWidth = 2;
     series4.tensionX = 0.9;
-    series4.tooltipText = "fact: {valueY.value}";
+    series4.tooltipText = "BME280: {valueY.value}";
     series4.defaultState.transitionDuration = transDur;
     series4.name = "inside"
+
+    //sensor DS - t curve
+    var series4 = chart.series.push(new am4charts.LineSeries())
+    series4.data = DataSensorT_DS
+    series4.dataFields.dateX = "date";
+    series4.dataFields.valueY = "absolute_max";
+    series4.stroke = am4core.color("blue");
+    series4.strokeWidth = 2;
+    series4.tensionX = 0.9;
+    series4.tooltipText = "DS18B20: {valueY.value}";
+    series4.defaultState.transitionDuration = transDur;
+    series4.name = "inside_DS"
 
     //narodmon curve
     var series5 = chart.series.push(new am4charts.LineSeries())

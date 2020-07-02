@@ -45,6 +45,7 @@ def balcony():
     data_narodmon = db_inst.get_data_for_chart('narodmon')
     data_sensor_t = db_inst.get_data_for_chart('wemos_south_balcony')
     data_sensor_h = db_inst.get_data_for_chart('wemos_south_balcony', parameter='humidity')
+    data_sensor_t_ds = db_inst.get_data_for_chart('wemos_south_balcony_DS18B20')
     db_inst.db_close()
 
     return render_template('balcony.html',
@@ -53,7 +54,8 @@ def balcony():
                            data_rp5=data_rp5,
                            data_narodmon=data_narodmon,
                            data_sensor_t=data_sensor_t,
-                           data_sensor_h=data_sensor_h
+                           data_sensor_h=data_sensor_h,
+                           data_sensor_t_ds=data_sensor_t_ds
                            )
 
 
